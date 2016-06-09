@@ -6,13 +6,16 @@ use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
     public function postLogin(Request $request){
-        $user = User::find(1);
-        $token = JWTAuth::fromUser($user);
-        return response()->json(['token' => $token, 'user' => $user]);
+        if ( \Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')]) ) {
+            $user = User::find(1);
+            $token = \JWTAuth::fromUser($user);
+            return response()->json(['token' => $token, 'user' => $user]);
+        } else {
+            return response()->json([], 400);
+        }
     }
 }

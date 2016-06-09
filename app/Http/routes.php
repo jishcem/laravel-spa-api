@@ -1,10 +1,6 @@
 <?php
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH');
-header("Access-Control-Allow-Headers: X-Requested-With, Content-Type");
-
-Route::group(['prefix' => 'api'], function () {
+Route::group(['prefix' => 'api', 'middleware' => 'cors'], function () {
 
     Route::post('/login', [ 'uses' => 'AuthController@postLogin' ]);
 
