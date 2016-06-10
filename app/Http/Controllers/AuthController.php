@@ -13,9 +13,13 @@ class AuthController extends Controller
         if ( \Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')]) ) {
             $user = User::find(1);
             $token = \JWTAuth::fromUser($user);
-            return response()->json(['token' => $token, 'user' => $user]);
+            return response()->json(['token' => $token, 'user' => $user->toArray()]);
         } else {
             return response()->json([], 400);
         }
+    }
+
+    public function getMe(Request $request) {
+
     }
 }
