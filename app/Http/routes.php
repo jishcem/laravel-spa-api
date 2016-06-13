@@ -3,10 +3,14 @@
 Route::group(['prefix' => 'api', 'middleware' => 'cors'], function () {
 
     Route::post('/login', [ 'uses' => 'AuthController@postLogin' ]);
-    Route::post('/refresh-token', [ 'uses' => 'AuthController@refreshToken' ]);
+
+    Route::group(['middleware' => 'jwt.refresh'], function () {
+        Route::post('/refresh-token', [ 'uses' => 'AuthController@refreshToken' ]);
+    });
 
     Route::group(['middleware' => 'jwt.auth'], function () {
-        Route::get('/me', [ 'uses' => 'AuthController@getMe' ]);
+        Route::post('/me', 'AuthController@getMe');
+        Route::resource('task', 'TaskController');
     });
 
     Route::get('/tasks', function () {
