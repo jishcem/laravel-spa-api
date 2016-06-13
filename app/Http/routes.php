@@ -3,8 +3,9 @@
 Route::group(['prefix' => 'api', 'middleware' => 'cors'], function () {
 
     Route::post('/login', [ 'uses' => 'AuthController@postLogin' ]);
+    Route::post('/refresh-token', [ 'uses' => 'AuthController@refreshToken' ]);
 
-    Route::group(['middleware' => 'jwt-auth'], function () {
+    Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('/me', [ 'uses' => 'AuthController@getMe' ]);
     });
 

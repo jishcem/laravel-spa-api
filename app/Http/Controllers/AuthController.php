@@ -19,7 +19,11 @@ class AuthController extends Controller
         }
     }
 
-    public function getMe(Request $request) {
+    public function refreshToken (Request $request) {
 
+    }
+
+    public function getMe(Request $request) {
+        dd($request->user());
     }
 }
