@@ -24,8 +24,7 @@ class CreateTaskRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required',
-            'wqewqe' => 'required'
+            'name' => 'required'
         ];
     }
 }

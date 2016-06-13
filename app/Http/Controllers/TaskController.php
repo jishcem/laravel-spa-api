@@ -16,7 +16,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return ['four', 'five', 'six'];
+        return response(['tasks' => Task::all()->toArray()]);
     }
 
     /**
@@ -27,7 +27,7 @@ class TaskController extends Controller
      */
     public function store(Requests\CreateTaskRequest $request)
     {
-        return 'hi there, the request is valid';
+        return Task::create(['name' => $request->get('name')])->toArray();
     }
 
     /**
@@ -72,6 +72,8 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Task::find($id)->delete();
+
+        return response()->json(['status' => 1]);
     }
 }

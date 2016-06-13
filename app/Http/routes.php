@@ -10,7 +10,9 @@ Route::group(['prefix' => 'api', 'middleware' => 'cors'], function () {
 
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::post('/me', 'AuthController@getMe');
-        Route::resource('task', 'TaskController');
+        Route::get('/task', 'TaskController@index');
+        Route::post('/task', 'TaskController@store');
+        Route::post('/task/delete/{id}', 'TaskController@destroy');
     });
 
     Route::get('/tasks', function () {
