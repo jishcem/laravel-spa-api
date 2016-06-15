@@ -49,7 +49,7 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        return Task::find($id)->toArray();
     }
 
     /**
@@ -61,7 +61,11 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $task = Task::find($id);
+        $task->update([
+          'name' => $request->get('name')
+        ]);
+        return $task->toArray();
     }
 
     /**

@@ -13,6 +13,8 @@ Route::group(['prefix' => 'api', 'middleware' => 'cors'], function () {
         Route::get('/task', 'TaskController@index');
         Route::post('/task', 'TaskController@store');
         Route::post('/task/delete/{id}', 'TaskController@destroy');
+        Route::post('/task/edit/{id}', 'TaskController@edit');
+        Route::post('/task/update/{id}', 'TaskController@update');
     });
 
     Route::get('/tasks', function () {
