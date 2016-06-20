@@ -1,28 +1,21 @@
 <?php
 
-Route::group(['prefix' => 'api', 'middleware' => 'cors'], function () {
+$api = app('Dingo\Api\Routing\Router');
 
-    Route::post('/login', [ 'uses' => 'AuthController@postLogin' ]);
+$api->version('v1', ['middleware' => 'cors'], function ($api) {
 
-    Route::group(['middleware' => 'jwt.refresh'], function () {
-        Route::post('/refresh-token', [ 'uses' => 'AuthController@refreshToken' ]);
+    $api->post('/login', [ 'uses' => 'App\Http\Controllers\AuthController@postLogin' ]);
+
+    $api->group(['middleware' => 'jwt.refresh'], function ($api) {
+        $api->post('/refresh-token', [ 'uses' => 'App\Http\Controllers\AuthController@refreshToken' ]);
     });
 
-    Route::group(['middleware' => 'jwt.auth'], function () {
-        Route::post('/me', 'AuthController@getMe');
-        Route::get('/task', 'TaskController@index');
-        Route::post('/task', 'TaskController@store');
-        Route::post('/task/delete/{id}', 'TaskController@destroy');
-        Route::post('/task/edit/{id}', 'TaskController@edit');
-        Route::post('/task/update/{id}', 'TaskController@update');
+    $api->group(['middleware' => 'jwt.auth'], function ($api) {
+        $api->post('/me', 'App\Http\Controllers\AuthController@getMe');
+        $api->get('/task', 'App\Http\Controllers\TaskController@index');
+        $api->post('/task', 'App\Http\Controllers\TaskController@store');
+        $api->post('/task/delete/{id}', 'App\Http\Controllers\TaskController@destroy');
+        $api->post('/task/edit/{id}', 'App\Http\Controllers\TaskController@edit');
+        $api->post('/task/update/{id}', 'App\Http\Controllers\TaskController@update');
     });
-
-    Route::get('/tasks', function () {
-        return ['one', 'two', 'three'];
-    });
-
-});
-
-Route::get('/', function () {
-    return view('welcome');
 });
