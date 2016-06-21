@@ -4,6 +4,10 @@ $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', ['middleware' => 'cors'], function ($api) {
 
+    $api->get('/', function(){
+
+    });
+
     $api->post('/login', [ 'uses' => 'App\Http\Controllers\AuthController@postLogin' ]);
 
     $api->group(['middleware' => 'jwt.refresh'], function ($api) {
