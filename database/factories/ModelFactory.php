@@ -19,3 +19,13 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+
+$factory->defineAs(App\User::class, 'admin', function (Faker\Generator $faker) {
+    return [
+        'name' => 'admin',
+        'email' => 'admin@admin.com',
+        'password' => bcrypt('password'),
+        'remember_token' => str_random(10),
+    ];
+});

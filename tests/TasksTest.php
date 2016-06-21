@@ -7,18 +7,39 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class TasksTest extends TestCase
 {
 
-    use DatabaseMigrations;
+    use DatabaseMigrations, WithoutMiddleware;
 
     /**
-     * A basic test example.
+     * Test to
      *
      * @return void
      */
     public function testExample()
     {
-        $this->get('api')
-            ->seeJson([
-                'Tasks' => 'Here is our tasks'
+
+        $this->withoutMiddleware();
+
+        $authUser = factory(\App\User::class, 'admin')->create();
+        $authToken = \JWTAuth::fromUser($authUser);
+
+        $this->refreshApplication();
+
+        $this->artisan('migrate:refresh');
+        $this->seed('TasksTableSeeder');
+
+        factory(\App\User::class)->create();
+
+        $server = [
+            'HTTP_Authorization' => 'Bearer '.$authToken
+        ];
+
+        $this->get('api/task', $server)
+            ->seeJsonStructure([
+                'tasks' => [
+                    '*' => [
+                        'id', 'name'
+                    ]
+                ]
             ]);
     }
 }
