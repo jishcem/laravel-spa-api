@@ -30,14 +30,15 @@ class TasksTest extends TestCase
         factory(\App\User::class)->create();
 
         $server = [
-            'HTTP_Authorization' => 'Bearer '.$authToken
+            'HTTP_Authorization' => 'Bearer ' . $authToken
         ];
 
         $this->get('api/task', $server)
             ->seeJsonStructure([
                 'tasks' => [
                     '*' => [
-                        'id', 'name'
+                        'id',
+                        'name'
                     ]
                 ]
             ]);
