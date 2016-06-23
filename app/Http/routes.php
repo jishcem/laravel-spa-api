@@ -10,7 +10,7 @@ $api->version('v1', ['middleware' => 'cors'], function ($api) {
         $api->post('/refresh-token', [ 'uses' => 'App\Http\Controllers\AuthController@refreshToken' ]);
     });
 
-    $api->group(['middleware' => ['jwt.auth', 'jwt.refresh']], function ($api) {
+    $api->group(['middleware' => ['jwt.auth']], function ($api) {
         $api->post('/me', 'App\Http\Controllers\AuthController@getMe');
         $api->get('/task', 'App\Http\Controllers\TaskController@index');
         $api->post('/task', 'App\Http\Controllers\TaskController@store');

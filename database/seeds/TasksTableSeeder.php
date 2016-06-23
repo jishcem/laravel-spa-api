@@ -16,9 +16,7 @@ class TasksTableSeeder extends Seeder
         \DB::table('tasks')->delete();
 
         $tasks = [
-            [ 'name' => 'one' ],
-            [ 'name' => 'two' ],
-            [ 'name' => 'three' ]
+            [ 'name' => 'one' ]
         ];
 
         foreach ($tasks as $task) {

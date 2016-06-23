@@ -22,4 +22,17 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         return $app;
     }
+
+    protected function getToken()
+    {
+        $authUser = factory(\App\User::class, 'admin')->create();
+        return \JWTAuth::fromUser($authUser);
+    }
+
+    protected function refreshApp()
+    {
+        $this->refreshApplication();
+
+        $this->artisan('migrate:refresh');
+    }
 }
