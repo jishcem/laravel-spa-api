@@ -1,13 +1,11 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class TasksTest extends TestCase
 {
 
-    use DatabaseMigrations, WithoutMiddleware;
+    use DatabaseMigrations;
 
     /**
      * @test
@@ -17,33 +15,26 @@ class TasksTest extends TestCase
      *
      * @return void
      */
-    public function it_gets_all_tasks_for_authenticated_user()
+    public function it_gets_all_tasks()
     {
-        $this->get('api/task', $this->setUpAuthenticatedUserHeader())
-            ->seeJsonStructure([
-                'tasks' => [
-                    '*' => [
-                        'id',
-                        'name'
-                    ]
+        $user = factory(App\User::class)->create();
+
+        $this->seed('TasksTableSeeder');
+
+        $this->get('api/task', $this->headers($user))->seeJsonStructure([
+            'tasks' => [
+                '*' => [
+                    'id',
+                    'name'
                 ]
-            ]);
-    }
+            ]
+        ]);
 
-    /**
-     * @test
-     *
-     * Test GET /api/task
-     * Gets no task(s) but error for a user without token
-     *
-     * @return void
-     *
-     */
-    public function it_gets_no_tasks_for_non_authenticated_user()
-    {
-        $this->withoutMiddleware();
+        $this->assertEquals(200, $this->get('api/task', $this->headers($user))->response->status());
 
-        $this->assertEquals(404, $this->get('api/task')->response->status());
+        \JWTAuth::invalidate();
+
+        $this->assertEquals(401, $this->get('api/task')->response->status());
     }
 
 
@@ -51,58 +42,95 @@ class TasksTest extends TestCase
      * @test
      *
      * Test POST /api/task
-     * Creates a task for a user with token
+     * Creates a task
      *
      * @return void
      */
-    public function it_creates_a_task_for_authenticated_user ()
+    public function it_creates_a_task()
     {
+        $user = factory(App\User::class)->create();
+
         $this->post(
             'api/task',
             [
                 'name' => 'New Task'
             ],
-            $this->setUpAuthenticatedUserHeader()
+            $this->headers($user)
         )
             ->seeJsonContains(['name' => 'New Task'])
             ->seeInDatabase('tasks', ['name' => 'New Task']);
+
+        \JWTAuth::invalidate();
+
+        $this->assertEquals(401, $this->post('api/task')->response->status());
     }
 
     /**
      * @test
      *
-     * Test POST /api/task
-     * Creates a task for a user with token
+     * Test GET /api/task/edit/{id}
+     * Gets a task details
      *
      * @return void
      */
-    public function it_does_not_creates_a_task_for_unauthenticated_user ()
+    public function it_shows_a_task()
     {
-        $this->withoutMiddleware();
-
-        $this->assertEquals(404, $this->post('api/task')->response->status());
-    }
-
-    /**
-     * @return array Header Array with JWT Token
-     */
-    private function setUpAuthenticatedUserHeader()
-    {
-        $this->withoutMiddleware();
-
-        $token = $this->getToken();
-
-        $this->refreshApp();
+        $user = factory(App\User::class)->create();
 
         $this->seed('TasksTableSeeder');
 
-        factory(\App\User::class)->create();
+        $this->post('api/task/edit/1', [], $this->headers($user))
+            ->seeJsonContains(['name' => 'one'])
+            ->seeInDatabase('tasks', ['name' => 'one']);
 
-        $server = [
-            'HTTP_Authorization' => 'Bearer ' . $token
-        ];
+        \JWTAuth::invalidate();
 
-        return $server;
+        $this->assertEquals(401, $this->post('api/task/edit/1')->response->status());
+    }
+
+
+    /**
+     * Test GET /api/task/update/{id}
+     * It updates a task
+     */
+    public function it_updates_a_task()
+    {
+        $user = factory(App\User::class)->create();
+
+        $this->post(
+            'api/task/update/1',
+            ['name' => 'two'],
+            $this->headers($user)
+        )
+            ->seeJsonContains(['name' => 'two'])
+            ->seeInDatabase('tasks', ['name' => 'two']);
+
+        \JWTAuth::invalidate();
+
+        $this->assertEquals(401, $this->post(
+            'api/task/update/1',
+            ['name' => 'two'],
+            $this->headers($user)
+        )->response->status());
+    }
+
+    /**
+     * Test POST /api/task/delete/{id}
+     * It delete a task for authenticated user and makes sure the deleted entry is not in the database
+     *
+     * @return void
+     */
+    public function it_deletes_a_task()
+    {
+        $user = factory(App\User::class)->create();
+
+        $this->post('api/task/delete/1', [], $this->headers($user))
+            ->seeJsonContains(['status' => 1])
+            ->missingFromDatabase('tasks', ['name' => 'one']);
+
+        \JWTAuth::invalidate();
+
+        $this->assertEquals(401, $this->post('api/task/delete/1', [], $this->headers($user))->response->status());
     }
 
 }

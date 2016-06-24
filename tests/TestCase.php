@@ -23,16 +23,21 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         return $app;
     }
 
-    protected function getToken()
+    /**
+     * Create header with token
+     * @param null $user
+     * @return array
+     */
+    protected function headers($user = null)
     {
-        $authUser = factory(\App\User::class, 'admin')->create();
-        return \JWTAuth::fromUser($authUser);
-    }
+        $headers = ['Accept' => 'application/json'];
 
-    protected function refreshApp()
-    {
-        $this->refreshApplication();
+        if (!is_null($user)) {
+            $token = \JWTAuth::fromUser($user);
+            \JWTAuth::setToken($token);
+            $headers['Authorization'] = 'Bearer ' . $token;
+        }
 
-        $this->artisan('migrate:refresh');
+        return $headers;
     }
 }
