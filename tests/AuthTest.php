@@ -9,7 +9,7 @@ class AuthTest extends TestCase
 
     /**
      * @test
-     * tries to login and make sure token is returned
+     * tries to login and make sure token is returned and also tries to login without fields
      *
      * @return void
      */
@@ -17,31 +17,32 @@ class AuthTest extends TestCase
     {
         factory(App\User::class, 'admin')->create();
 
-        $this->assertEquals(200, $this->post(
+        $api = $this->post(
             'api/login',
             [
                 'email' => 'admin@admin.com',
                 'password' => 'password'
             ]
-        )->response->status());
+        );
 
-        $this->post(
-            'api/login',
-            [
-                'email' => 'admin@admin.com',
-                'password' => 'password'
-            ]
-        )->seeJsonStructure([
+        $this->assertEquals(200, $api->response->status());
+
+        $api->seeJsonStructure([
             'token' => [],
             'user' => []
         ]);
+
+        $this->assertEquals(400, $api = $this->post(
+            'api/login',
+            []
+        )->response->status());
 
     }
 
     /**
      * @test
      *
-     * It tries to register and get the token back in the response
+     * It tries to register and get the token back in the response and also tries to register without fields
      *
      * @return null
      */
@@ -61,5 +62,10 @@ class AuthTest extends TestCase
             'token' => [],
             'user' => []
         ]);
+
+        $this->assertEquals(422, $api = $this->post(
+            'api/register',
+            []
+        )->response->status());
     }
 }

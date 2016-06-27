@@ -6,6 +6,7 @@ $api->version('v1', ['middleware' => 'cors'], function ($api) {
 
     $api->post('/login', [ 'uses' => 'App\Http\Controllers\AuthController@postLogin' ]);
     $api->post('/register', [ 'uses' => 'App\Http\Controllers\AuthController@postRegister' ]);
+    $api->post('/password', [ 'uses' => 'App\Http\Controllers\Auth\PasswordController@postEmail' ]);
 
     $api->group(['middleware' => 'jwt.refresh'], function ($api) {
         $api->post('/refresh-token', [ 'uses' => 'App\Http\Controllers\AuthController@refreshToken' ]);
