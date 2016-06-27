@@ -37,4 +37,29 @@ class AuthTest extends TestCase
         ]);
 
     }
+
+    /**
+     * @test
+     *
+     * It tries to register and get the token back in the response
+     *
+     * @return null
+     */
+    public function it_tries_to_register_and_get_token()
+    {
+        $api = $this->post(
+            'api/register',
+            [
+                'name' => 'test name',
+                'email' => 'test@test.com',
+                'password' => bcrypt('password')
+            ]
+        );
+
+        $this->assertEquals(200, $api->response->status());
+        $api->seeJsonStructure([
+            'token' => [],
+            'user' => []
+        ]);
+    }
 }
