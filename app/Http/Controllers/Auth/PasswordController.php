@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PasswordResetRequest;
 use App\User;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
@@ -59,20 +60,13 @@ class PasswordController extends Controller
         }
     }
 
-    public function postReset(Request $request)
+    public function postReset(PasswordResetRequest $request)
     {
         return $this->reset($request);
     }
 
     public function reset(Request $request)
     {
-        $this->validate(
-            $request,
-            $this->getResetValidationRules(),
-            $this->getResetValidationMessages(),
-            $this->getResetValidationCustomAttributes()
-        );
-
         $credentials = $this->getResetCredentials($request);
 
         $broker = $this->getBroker();
@@ -83,9 +77,9 @@ class PasswordController extends Controller
 
         switch ($response) {
             case Password::PASSWORD_RESET:
-                return $this->getResetSuccessResponse($response);
+                return response()->json(['status' => 1], 200);
             default:
-                return $this->getResetFailureResponse($request, $response);
+                return response()->json(['errors' => 'No user found'], 422);
         }
     }
 }
