@@ -68,4 +68,69 @@ class AuthTest extends TestCase
             []
         )->response->status());
     }
+
+
+    /**
+     * @test
+     *
+     * It requests to reset the password
+     */
+    public function it_requests_to_reset_password(){
+
+        factory(App\User::class, 'admin')->create();
+
+        \Mail::shouldReceive('send')
+            ->andReturn(true);
+
+        $api = $this->post(
+            'api/password',
+            [
+                'email' => 'admin@admin.com'
+            ]
+        );
+
+        $this->assertEquals(200, $api->response->status());
+
+        $api->seeJsonStructure([
+            'status' => []
+        ]);
+
+    }
+
+    /**
+     * @test
+     *
+     * It resets the password
+     */
+    public function it_resets_the_password(){
+
+        factory(App\User::class, 'admin')->create();
+
+        \Mail::shouldReceive('send')
+            ->andReturn(true);
+
+        $this->post(
+            'api/password',
+            [
+                'email' => 'admin@admin.com'
+            ]
+        );
+
+        $token = \DB::table('password_resets')
+            ->where('email', 'admin@admin.com')
+            ->value('token');
+
+        $api = $this->post(
+            'api/password/reset',
+            [
+                'token'                     => $token,
+                'email'                     => 'admin@admin.com',
+                'password'                  => 'asdasd',
+                'password_confirmation'     => 'asdasd'
+            ]
+        );
+
+        $this->assertEquals(200, $api->response->status());
+
+    }
 }
