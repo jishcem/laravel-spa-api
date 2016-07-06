@@ -24,7 +24,7 @@ Create a new database, and assign the database credentials and name to the DB_DA
 
 If you want to see the emails in action, sign up for https://mailtrap.io/ and get the smtp credentials from the inbox page of mailtrap. And also update the MAIL_USERNAME and MAIL_PASSWORD
 
-Now run this command in the project root,
+Now run these commands in the project root,
 
 ```sh
 $ php artisan key:generate
