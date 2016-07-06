@@ -1,27 +1,43 @@
-# Laravel PHP Framework
+# Laravel API built for Single Page Applications.
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+This is a Laravel API boilerplate for kickstarting the developement.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+  - Only intended for API - I have not written any other routes
+  - Uses Dingo for API https://github.com/dingo/api
+  - Uses JWT for token based authentication https://github.com/tymondesigns/jwt-auth
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+Requirements:
+    Any laravel developement envirornment
 
-## Official Documentation
+Insallation:
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+```sh
+$ git clone https://github.com/jishcem/laravel-spa-api.git
+$ cd laravel-spa-api.git
+$ composer install
+```
 
-## Contributing
+Create a `.env` file in the project root. And copy the contents of the `.env-example` to the newly created file.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+I preffered using mysql in this, if you want to follow the same,
+Create a new database, and assign the database credentials and name to the DB_DATABASE, DB_USERNAME, DB_PASSWORD
 
-## Security Vulnerabilities
+If you want to see the emails in action, sign up for https://mailtrap.io/ and get the smtp credentials from the inbox page of mailtrap. And also update the MAIL_USERNAME and MAIL_PASSWORD
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+Now run this command in the project root,
 
-## License
+```sh
+$ php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+Assuming you start the web server and have the URL http://laravel-spa-api.dev working, you are ready with the API.
+
+If you go to the the url http://laravel-spa-api.dev/api/task and see
+
+```json
+{"error":"token_not_provided"}
+```
+
+We have finished setting up the API.
+
+
