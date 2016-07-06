@@ -28,6 +28,7 @@ Now run this command in the project root,
 
 ```sh
 $ php artisan key:generate
+$ php artisan migrate
 ```
 
 Assuming you start the web server and have the URL http://laravel-spa-api.dev working, you are ready with the API.
